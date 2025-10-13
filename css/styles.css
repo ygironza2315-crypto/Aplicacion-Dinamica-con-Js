@@ -35,9 +35,19 @@ body{
 .grid-3{ display:grid; grid-template-columns:1fr auto auto; gap:12px; }
 .full{ grid-column:1 / -1; }
 
-input[type="text"], input[type="tel"], input[type="search"], select{
-  width:100%; padding:12px 14px; border:1px solid #e4e4e4; border-radius:10px;
-  background:#fff; outline:none; font-size:16px;
+/* Inputs con el mismo estilo (incluye email) */
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="search"],
+select{
+  width:100%;
+  padding:12px 14px;
+  border:1px solid #e4e4e4;
+  border-radius:10px;
+  background:#fff;
+  outline:none;
+  font-size:16px;
   transition:border-color .15s, box-shadow .15s;
 }
 input:focus{ border-color:var(--primary); box-shadow:0 0 0 3px rgba(26,115,232,.15); }
@@ -63,13 +73,167 @@ tbody tr:hover{ background:#fafafa; }
 .muted{ color:var(--muted); font-size:12px; }
 .empty{ text-align:center; padding:26px; color:#666; }
 
+/* Clase accesible */
 .sr-only{
   position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
   clip:rect(0,0,0,0); white-space:nowrap; border:0;
 }
 
+/* Botones de acción compactos (columna Contacto) */
+.icon-actions { display:flex; gap:8px; align-items:center; }
+.icon-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:36px; height:36px; border-radius:10px;
+  border:1px solid #e5e7eb; background:#f9fafb;
+  text-decoration:none; font-size:18px; line-height:1;
+}
+.icon-btn:hover { background:#eef2ff; }
+.icon-btn:focus { outline:2px solid var(--primary); outline-offset:2px; }
+.icon-btn[aria-disabled="true"] { opacity:.5; pointer-events:none; }
+
+/* ===== Bloque de iconos como en la referencia ===== */
+.icons-section{
+  margin: 10px 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ===== Bloque de íconos con “Contacto” del mismo color de la página ===== */
+.icons-section {
+  margin: 10px 0 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Cuadrícula 2x2 con contacto ocupando 2 filas */
+.icon-grid {
+  display: grid;
+  grid-template-columns: 110px 130px;  /* dos columnas: izq y der */
+  grid-template-rows: 110px 110px;     /* dos filas */
+  gap: 8px;                            /* separación visible */
+}
+
+/* Estilo común para cada icono */
+.icon-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8cc4ff;                 /* fondo celeste */
+  border: 4px solid #000;              /* bordes negros */
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.icon-link img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+/* Animaciones */
+.icon-link:hover {
+  filter: brightness(1.1);
+  transform: scale(1.03);
+}
+.icon-link:active {
+  transform: scale(0.96);
+}
+
+/* Ocultar texto bajo los íconos */
+.icon-link span {
+  display: none;
+}
+
+/* Posiciones fijas */
+.icon-phone {
+  grid-column: 1;
+  grid-row: 1;
+}
+.icon-mail {
+  grid-column: 1;
+  grid-row: 2;
+}
+.icon-contact {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  background: rgb(232, 192, 107); /* mismo color del fondo de la página */
+}
+.icon-contact img {
+  width: 92%;
+  height: 92%;
+  object-fit: contain;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .icon-grid {
+    grid-template-columns: 90px 110px;
+    grid-template-rows: 90px 90px;
+    gap: 6px;
+    transform: scale(0.9); /* reduce tamaño, mantiene proporción */
+  }
+
+  .icon-link {
+    border-width: 3px;
+    border-radius: 10px;
+  }
+
+  .icon-link img {
+    width: 75%;
+    height: 75%;
+  }
+
+  .icon-contact img {
+    width: 90%;
+    height: 90%;
+  }
+}
+
+@media (max-width: 400px) {
+  .icon-grid {
+    grid-template-columns: 70px 90px;
+    grid-template-rows: 70px 70px;
+    gap: 5px;
+    transform: scale(0.85);
+  }
+}
+
 .site-footer{ width:min(980px,100%); display:flex; justify-content:center; }
+
 @media (max-width:780px){
   .grid{ grid-template-columns:1fr; }
   .grid-3{ grid-template-columns:1fr; }
+}
+
+@media (max-width:600px){
+  .icon-link img { width:70px; height:70px; }
+  .icon-grid { gap:24px; }
+}
+
+.icon-contact{
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  background-color: var(--bg);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.icon-contact img{
+  width: 95%;
+  height: 95%;
+  object-fit: cover;  /* cambia a contain si no quieres recorte */
+}
+
+/* Icono de género junto al nombre */
+.gender-ico{
+  font-size: 20px;
+  margin-right: 8px;
+  display: inline-flex;
+  vertical-align: middle;
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,.12));
 }

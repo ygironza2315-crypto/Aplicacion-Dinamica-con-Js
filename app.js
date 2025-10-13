@@ -6,14 +6,18 @@ const uid = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 function loadContacts() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  } catch {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch { return []; }
 }
 function saveContacts(list) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+// Icono por género (puedes cambiar emojis por imágenes si quieres)
+function genderIcon(gender) {
+  if (gender === "Female") return { char: "👩", label: "Femenino" };
+  if (gender === "Male")   return { char: "👨", label: "Masculino" };
+  return { char: "🧑", label: "Sin género" };
 }
 
 // ---------- ESTADO ----------
@@ -46,19 +50,31 @@ function render() {
 
   if (filtered.length === 0) {
     tbody.innerHTML =
-      '<tr class="empty"><td colspan="6">No hay contactos que coincidan</td></tr>';
+      '<tr class="empty"><td colspan="7">No hay contactos que coincidan</td></tr>';
   } else {
     for (const c of filtered) {
+      const gi = genderIcon(c.gender || "");
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td><strong>${escapeHTML(c.firstName)} ${escapeHTML(
-        c.lastName
-      )}</strong>
-            <div class="muted">${new Date(c.createdAt).toLocaleString()}</div>
+        <td>
+          <span class="gender-ico" title="${gi.label}" aria-hidden="true">${gi.char}</span>
+          <strong>${escapeHTML(c.firstName)} ${escapeHTML(c.lastName)}</strong>
+          <div class="muted">${new Date(c.createdAt).toLocaleString()}</div>
         </td>
         <td>${escapeHTML(c.phone || "")}</td>
         <td>${escapeHTML(c.city || "")}</td>
         <td>${escapeHTML(c.address || "")}</td>
+        <td>
+          <div class="icon-actions">
+            <a class="icon-btn" title="Llamar" aria-label="Llamar"
+               href="${c.phone ? `tel:${c.phone.replace(/\s+/g,'')}` : '#'}"
+               ${c.phone ? "" : 'aria-disabled="true"'}>📞</a>
+
+            <a class="icon-btn" title="Enviar correo" aria-label="Enviar correo"
+               href="${c.email ? `mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent('Hola ' + (c.firstName||''))}` : '#'}"
+               ${c.email ? "" : 'aria-disabled="true"'}>✉️</a>
+          </div>
+        </td>
         <td>${escapeHTML(c.gender || "")}</td>
         <td>
           <button class="btn-secondary" data-action="edit" data-id="${c.id}">Editar</button>
@@ -68,9 +84,7 @@ function render() {
     }
   }
 
-  $("#totalBadge").textContent = `${contacts.length} contacto${
-    contacts.length !== 1 ? "s" : ""
-  }`;
+  $("#totalBadge").textContent = `${contacts.length} contacto${contacts.length !== 1 ? "s" : ""}`;
 }
 
 function escapeHTML(str) {
@@ -92,10 +106,11 @@ form.addEventListener("submit", (e) => {
 
   // Normalización
   payload.firstName = payload.firstName.trim();
-  payload.lastName = payload.lastName.trim();
-  payload.phone = payload.phone.trim();
-  payload.city = (payload.city || "").trim();
-  payload.address = (payload.address || "").trim();
+  payload.lastName  = payload.lastName.trim();
+  payload.phone     = payload.phone.trim();
+  payload.email     = (payload.email || "").trim();
+  payload.city      = (payload.city || "").trim();
+  payload.address   = (payload.address || "").trim();
 
   // Validación simple
   if (!payload.firstName || !payload.lastName || !payload.phone || !payload.gender) {
@@ -113,9 +128,11 @@ form.addEventListener("submit", (e) => {
     }
     exitEditMode();
   } else {
-    // CREATE (evitar duplicados simples por teléfono)
-    if (contacts.some((c) => c.phone === payload.phone)) {
-      flash("Ya existe un contacto con ese teléfono.");
+    // CREATE (evitar duplicados por teléfono o email, si hay)
+    if (contacts.some(c =>
+      c.phone === payload.phone || (payload.email && c.email === payload.email)
+    )) {
+      flash("Ya existe un contacto con ese teléfono o email.");
       return;
     }
     contacts.push({ id: uid(), createdAt: Date.now(), ...payload });
@@ -130,25 +147,24 @@ form.addEventListener("submit", (e) => {
 function flash(msg, positive = false) {
   statusEl.textContent = msg;
   statusEl.style.color = positive ? "var(--success)" : "var(--danger)";
-  setTimeout(() => {
-    statusEl.textContent = "";
-  }, 2000);
+  setTimeout(() => { statusEl.textContent = ""; }, 2000);
 }
 
-function enterEditMode(contact) {
+function enterEditMode(contact){
   editingId = contact.id;
   form.firstName.value = contact.firstName || "";
-  form.lastName.value = contact.lastName || "";
-  form.phone.value = contact.phone || "";
-  form.city.value = contact.city || "";
-  form.address.value = contact.address || "";
-  $$('input[name="gender"]').forEach((r) => (r.checked = r.value === contact.gender));
+  form.lastName.value  = contact.lastName  || "";
+  form.phone.value     = contact.phone     || "";
+  form.email.value     = contact.email     || "";
+  form.city.value      = contact.city      || "";
+  form.address.value   = contact.address   || "";
+  $$('input[name="gender"]').forEach(r => r.checked = r.value === contact.gender);
   submitBtn.textContent = "Guardar";
   cancelEditBtn.hidden = false;
   form.firstName.focus();
 }
 
-function exitEditMode() {
+function exitEditMode(){
   editingId = null;
   form.reset();
   submitBtn.textContent = "ADD";
@@ -199,10 +215,7 @@ $("#clearAllBtn").addEventListener("click", () => {
 
 function debounce(fn, ms) {
   let t;
-  return (...args) => {
-    clearTimeout(t);
-    t = setTimeout(() => fn.apply(null, args), ms);
-  };
+  return (...args) => { clearTimeout(t); t = setTimeout(() => fn.apply(null, args), ms); };
 }
 
 // Primera carga

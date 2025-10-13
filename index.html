@@ -4,10 +4,32 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Contact List (localStorage)</title>
+    <!-- Asegúrate de que el archivo exista en /css/styles.css -->
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <header class="site-header">
+      <!-- Íconos superiores -->
+      <section class="icons-section" aria-label="Accesos de contacto">
+  <div class="icon-grid">
+    <a href="tel:+573188357549" class="icon-link icon-phone" title="Llamar">
+      <img src="img/Telefono.png" alt="Llamar por teléfono" />
+      <span>Teléfono</span>
+    </a>
+
+    <a href="mailto:ygironza2315@gmail.com?subject=Consulta" class="icon-link icon-mail" title="Enviar correo">
+      <img src="img/Correo.png" alt="Enviar correo" />
+      <span>Correo</span>
+    </a>
+
+    <a href="#contact-form" class="icon-link icon-contact" title="Ir al formulario de contacto">
+      <img src="img/contacto.png" alt="Formulario de contacto" />
+      <span>Contacto</span>
+    </a>
+  </div>
+</section>
+
+
       <h1 class="title">Contact List</h1>
     </header>
 
@@ -30,8 +52,12 @@
 
             <div>
               <label class="sr-only" for="phone">Teléfono</label>
-              <input id="phone" name="phone" type="tel" placeholder="Input your phone"
-                     pattern="[0-9+\-()\s]{7,}" required />
+              <input id="phone" name="phone" type="tel" placeholder="Input your phone"required />
+            </div>
+
+            <div>
+              <label class="sr-only" for="email">Correo electrónico</label>
+              <input id="email" name="email" type="email" placeholder="Input your email" />
             </div>
 
             <div>
@@ -86,12 +112,13 @@
                 <th scope="col">Teléfono</th>
                 <th scope="col">Ciudad</th>
                 <th scope="col">Dirección</th>
+                <th scope="col">Contacto</th>
                 <th scope="col">Género</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody id="tbody">
-              <tr class="empty"><td colspan="6">No hay contactos todavía</td></tr>
+              <tr class="empty"><td colspan="7">No hay contactos todavía</td></tr>
             </tbody>
           </table>
         </div>
