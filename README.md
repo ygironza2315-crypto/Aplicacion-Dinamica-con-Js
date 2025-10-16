@@ -1,8 +1,8 @@
 # Aplicacion-Dinamica-con-Js
 
-Esta es una aplicación web para gestionar una lista de contactos utilizando **Vanilla JavaScript** y **localStorage**. Permite agregar, editar, eliminar y buscar contactos de manera dinámica.
+Aplicación web para gestionar una lista de contactos usando **JavaScript** y **localStorage**. Permite agregar, editar, eliminar, buscar y ordenar contactos de forma dinámica.
 
-## Instalación y ejecución
+## Procedimiento de instalación y uso
 
 1. **Descarga o clona el repositorio:**
    ```sh
@@ -10,14 +10,7 @@ Esta es una aplicación web para gestionar una lista de contactos utilizando **V
    ```
 2. **Abre la carpeta del proyecto.**
 3. **Ejecuta la aplicación:**
-   - Solo necesitas abrir el archivo [`index.html`](index.html) en tu navegador web favorito.
-
-## Estructura del proyecto
-
-- [`index.html`](index.html): Página principal con el formulario y la tabla de contactos.
-- [`app.js`](app.js): Lógica de la aplicación (agregar, editar, eliminar, buscar y ordenar contactos).
-- [`css/styles.css`](css/styles.css): Estilos visuales de la página.
-- [`README.md`](README.md): Documentación del proyecto.
+   - Abre el archivo `index.html` en tu navegador web.
 
 ## Funcionamiento
 
@@ -30,6 +23,30 @@ Esta es una aplicación web para gestionar una lista de contactos utilizando **V
 
 Todos los datos se almacenan localmente en el navegador usando `localStorage`, por lo que no se requiere servidor ni base de datos externa.
 
+## Uso del DOM en la aplicación
+
+El DOM (Document Object Model) se utiliza en varias partes del código para interactuar con los elementos de la página:
+
+- **Selección de elementos:**  
+  Se usan funciones como `document.querySelector` y `document.querySelectorAll` (abreviadas como `$` y `$$`) para seleccionar elementos del formulario, tabla, botones, etc.
+- **Renderizado dinámico:**  
+  La función `render()` actualiza el contenido de la tabla de contactos (`#tbody`) según los datos y filtros aplicados.
+- **Manejo de eventos:**  
+  Se agregan listeners para el formulario (`submit`), botones de editar/eliminar, búsqueda (`input`), orden (`change`) y borrar todos los contactos (`click`).
+- **Actualización de la interfaz:**  
+  Se modifican propiedades y contenido de elementos como el badge de total de contactos, mensajes de estado, y el formulario de edición.
+
+**Ejemplo de uso del DOM en el código:**
+```js
+const form = $("#contact-form"); // Selecciona el formulario
+form.addEventListener("submit", (e) => { ... }); // Escucha el evento submit
+
+const tbody = $("#tbody"); // Selecciona el cuerpo de la tabla
+tbody.innerHTML = "..."; // Actualiza el contenido de la tabla
+
+$("#search").addEventListener("input", debounce(render, 120)); // Escucha cambios en el buscador
+```
+
 ## Tecnologías usadas
 
 - HTML5
@@ -39,4 +56,3 @@ Todos los datos se almacenan localmente en el navegador usando `localStorage`, p
 
 ## Autor
 
-Hecho por [Generado por ia Copilot].
